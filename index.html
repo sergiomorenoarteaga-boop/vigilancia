@@ -194,7 +194,7 @@
             border: 1px solid #1a1a2a;
             border-radius: 8px;
             padding: 10px;
-            max-height: 120px;
+            max-height: 150px;
             overflow-y: auto;
             font-family: monospace;
             font-size: 0.75rem;
@@ -257,9 +257,6 @@
 </div>
 
 <script>
-// ============================================
-// CONFIGURACIÓN METERED
-// ============================================
 const METERED_DOMAIN = 'sergiomorenoarteaga.metered.live';
 const METERED_KEY = 'aU_M_b-4yJVFd0AERdKPD-To5d2Mw7oPhH8nir043EXyHmRS';
 
@@ -268,6 +265,7 @@ let iceServersCache = null;
 
 function addLog(id, msg, type='info') {
     const el = document.getElementById(id);
+    if (!el) return;
     const t = new Date().toLocaleTimeString();
     el.innerHTML += `<div class="${type}">[${t}] ${msg}</div>`;
     el.scrollTop = el.scrollHeight;
@@ -282,13 +280,11 @@ function genCode() {
 async function getIceServers() {
     if (iceServersCache) return iceServersCache;
     try {
-        const resp = await fetch(`https://${METERED_DOMAIN}/api/v1/turn/credentials?apiKey=${METERED_KEY}`);
+        const resp = await fetch('https://' + METERED_DOMAIN + '/api/v1/turn/credentials?apiKey=' + METERED_KEY);
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         iceServersCache = await resp.json();
-        console.log('ICE Servers:', iceServersCache);
         return iceServersCache;
     } catch(e) {
-        console.error('Error obteniendo TURN:', e);
         return [
             { urls: 'stun:stun.l.google.com:19302' },
             { urls: 'stun:stun1.l.google.com:19302' },
@@ -309,11 +305,17 @@ async function startCamera() {
 
     try {
         localStream = await navigator.mediaDevices.getUserMedia({
-            video: { width:{ideal:1280}, height:{ideal:720} },
+            video: { width: {ideal: 1280}, height: {ideal: 720}, frameRate: {ideal: 30} },
             audio: true
         });
         document.getElementById('camVideo').srcObject = localStream;
-        addLog('camLog', '📹 Cámara activa', 'ok');
+        
+        var tracks = localStream.getTracks();
+        var trackInfo = [];
+        for (var i = 0; i < tracks.length; i++) {
+            trackInfo.push(tracks[i].kind + ':' + tracks[i].enabled + ':' + tracks[i].readyState);
+        }
+        addLog('camLog', '📹 Cámara activa — Tracks: ' + trackInfo.join(', '), 'ok');
     } catch(e) {
         document.getElementById('camStatus').className = 'status bad';
         document.getElementById('camStatus').textContent = '❌ No se pudo acceder a la cámara';
@@ -322,10 +324,10 @@ async function startCamera() {
     }
 
     addLog('camLog', 'Obteniendo servidores TURN...', 'info');
-    const iceServers = await getIceServers();
+    var iceServers = await getIceServers();
     addLog('camLog', '✅ Servidores TURN obtenidos: ' + iceServers.length, 'ok');
 
-    const roomId = genCode();
+    var roomId = genCode();
 
     peer = new Peer('vig-' + roomId, {
         debug: 0,
@@ -335,7 +337,7 @@ async function startCamera() {
         }
     });
 
-    peer.on('open', () => {
+    peer.on('open', function() {
         document.getElementById('roomCode').textContent = roomId;
         document.getElementById('codeBox').style.display = 'block';
         document.getElementById('camStatus').className = 'status ok';
@@ -343,42 +345,53 @@ async function startCamera() {
         addLog('camLog', '📌 Sala: ' + roomId, 'ok');
     });
 
-    peer.on('call', (call) => {
-    addLog('camLog', '📞 Visor conectado!', 'ok');
-    addLog('camLog', 'Enviando tracks: ' + localStream.getTracks().map(t => t.kind + ':' + t.enabled + ':' + t.readyState).join(', '), 'info');
-    
-    // Crear nuevo stream asegurando que tiene vídeo y audio
-    const freshStream = new MediaStream();
-    localStream.getTracks().forEach(track => {
-        freshStream.addTrack(track.clone());
-    });
-    call.answer(freshStream);
-
-        viewers.push(call);
-        document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
-
-        call.on('close', () => {
-            viewers = viewers.filter(v => v !== call);
-            document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
-            addLog('camLog', '👋 Visor desconectado', 'warn');
+    peer.on('connection', function(conn) {
+        addLog('camLog', '🔗 Conexión de datos recibida', 'info');
+        conn.on('data', function(data) {
+            if (data === 'request-stream') {
+                addLog('camLog', '📞 Visor solicita vídeo, llamando...', 'ok');
+                
+                var tracks = localStream.getTracks();
+                var trackInfo = [];
+                for (var i = 0; i < tracks.length; i++) {
+                    trackInfo.push(tracks[i].kind + ':' + tracks[i].enabled + ':' + tracks[i].readyState);
+                }
+                addLog('camLog', 'Enviando tracks: ' + trackInfo.join(', '), 'info');
+                
+                var outgoingCall = peer.call(conn.peer, localStream);
+                
+                if (outgoingCall) {
+                    viewers.push(outgoingCall);
+                    document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
+                    addLog('camLog', '✅ Stream enviado al visor', 'ok');
+                    
+                    outgoingCall.on('close', function() {
+                        viewers = viewers.filter(function(v) { return v !== outgoingCall; });
+                        document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
+                        addLog('camLog', '👋 Visor desconectado', 'warn');
+                    });
+                    
+                    outgoingCall.on('error', function(err) {
+                        viewers = viewers.filter(function(v) { return v !== outgoingCall; });
+                        document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
+                        addLog('camLog', 'Error visor: ' + err.message, 'err');
+                    });
+                } else {
+                    addLog('camLog', '❌ No se pudo llamar al visor', 'err');
+                }
+            }
         });
-
-        call.on('error', (err) => {
-            viewers = viewers.filter(v => v !== call);
-            document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
-            addLog('camLog', 'Error visor: ' + err.message, 'err');
-        });
     });
 
-    peer.on('error', (e) => {
+    peer.on('error', function(e) {
         addLog('camLog', 'Error: ' + e.type + ' - ' + e.message, 'err');
         if (e.type === 'unavailable-id') {
             addLog('camLog', 'Código en uso, recargando...', 'warn');
-            setTimeout(() => location.reload(), 1500);
+            setTimeout(function() { location.reload(); }, 1500);
         }
     });
 
-    peer.on('disconnected', () => {
+    peer.on('disconnected', function() {
         addLog('camLog', 'Reconectando...', 'warn');
         peer.reconnect();
     });
@@ -394,34 +407,34 @@ function startViewer() {
     document.getElementById('codeInput').focus();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const inp = document.getElementById('codeInput');
-    inp.addEventListener('input', (e) => {
+document.addEventListener('DOMContentLoaded', function() {
+    var inp = document.getElementById('codeInput');
+    inp.addEventListener('input', function(e) {
         e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
     });
-    inp.addEventListener('keypress', (e) => {
-        if(e.key==='Enter') connectToCamera();
+    inp.addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') connectToCamera();
     });
 });
 
 async function connectToCamera() {
-    const code = document.getElementById('codeInput').value.trim();
+    var code = document.getElementById('codeInput').value.trim();
     if(code.length !== 6) {
         addLog('viewLog', '⚠️ Introduce 6 caracteres', 'warn');
         return;
     }
 
-    const btn = document.getElementById('goBtn');
+    var btn = document.getElementById('goBtn');
     btn.disabled = true;
     btn.textContent = '⏳...';
 
-    const st = document.getElementById('viewStatus');
+    var st = document.getElementById('viewStatus');
     st.style.display = 'block';
     st.className = 'status wait';
     st.textContent = '⏳ Conectando a ' + code + '...';
 
     addLog('viewLog', 'Obteniendo servidores TURN...', 'info');
-    const iceServers = await getIceServers();
+    var iceServers = await getIceServers();
     addLog('viewLog', '✅ Servidores TURN: ' + iceServers.length, 'ok');
     addLog('viewLog', 'Conectando a: ' + code, 'info');
 
@@ -433,61 +446,73 @@ async function connectToCamera() {
         }
     });
 
-    peer.on('open', () => {
+    peer.on('open', function() {
         addLog('viewLog', '✅ Señalización OK', 'ok');
+        addLog('viewLog', 'Solicitando stream a la cámara...', 'info');
 
-        const ctx = new AudioContext();
-        const oscillator = ctx.createOscillator();
-        const dst = ctx.createMediaStreamDestination();
-        oscillator.connect(dst);
-        oscillator.start();
-        const fakeStream = dst.stream;
-
-        const call = peer.call('vig-' + code, fakeStream);
-
-        if(!call) {
-            st.className = 'status bad';
-            st.textContent = '❌ No se pudo conectar';
-            btn.disabled = false;
-            btn.textContent = '▶ VER';
-            return;
-        }
-
-        const timeout = setTimeout(() => {
-            st.className = 'status bad';
-            st.textContent = '❌ Tiempo agotado — ¿el código es correcto?';
-            addLog('viewLog', 'Timeout: no se recibió vídeo', 'err');
-            btn.disabled = false;
-            btn.textContent = '▶ VER';
-        }, 20000);
-
-        call.on('stream', (remote) => {
-    clearTimeout(timeout);
-    addLog('viewLog', '📹 ¡Vídeo recibido!', 'ok');
-    addLog('viewLog', 'Tracks: ' + remote.getTracks().map(t => t.kind + ':' + t.enabled + ':' + t.readyState).join(', '), 'info');
-    st.className = 'status ok';
-    st.textContent = '🟢 Conectado — en directo';
-
-    const vid = document.getElementById('remoteVideo');
-    vid.srcObject = remote;
-    vid.muted = false;
-    vid.play().catch(e => addLog('viewLog', 'Play error: ' + e.message, 'warn'));
-
-            document.getElementById('remoteBox').style.display = 'block';
-            document.getElementById('viewBtns').style.display = 'flex';
-
-            oscillator.stop();
-            ctx.close();
+        // Conectar por datos y pedir que la cámara nos llame
+        var conn = peer.connect('vig-' + code, { reliable: true });
+        
+        conn.on('open', function() {
+            addLog('viewLog', '🔗 Conexión de datos establecida', 'ok');
+            conn.send('request-stream');
+            addLog('viewLog', '📡 Petición de vídeo enviada, esperando...', 'info');
         });
 
-        call.on('close', () => {
+        conn.on('error', function(err) {
+            addLog('viewLog', 'Error conexión: ' + err.message, 'err');
+            st.className = 'status bad';
+            st.textContent = '❌ Error de conexión';
+            btn.disabled = false;
+            btn.textContent = '▶ VER';
+        });
+    });
+
+    // Timeout de 20 segundos
+    var timeout = setTimeout(function() {
+        st.className = 'status bad';
+        st.textContent = '❌ Tiempo agotado — ¿el código es correcto?';
+        addLog('viewLog', 'Timeout: no se recibió vídeo', 'err');
+        btn.disabled = false;
+        btn.textContent = '▶ VER';
+    }, 20000);
+
+    // Recibir la llamada de la cámara
+    peer.on('call', function(call) {
+        addLog('viewLog', '📞 Recibiendo llamada de la cámara...', 'ok');
+        call.answer(); // Contestar sin enviar nada
+
+        call.on('stream', function(remote) {
+            clearTimeout(timeout);
+            
+            var tracks = remote.getTracks();
+            var trackInfo = [];
+            for (var i = 0; i < tracks.length; i++) {
+                trackInfo.push(tracks[i].kind + ':' + tracks[i].enabled + ':' + tracks[i].readyState);
+            }
+            addLog('viewLog', '📹 ¡Vídeo recibido! Tracks: ' + trackInfo.join(', '), 'ok');
+            
+            st.className = 'status ok';
+            st.textContent = '🟢 Conectado — en directo';
+
+            var vid = document.getElementById('remoteVideo');
+            vid.srcObject = remote;
+            vid.muted = false;
+            vid.play().catch(function(e) { 
+                addLog('viewLog', 'Play: ' + e.message, 'warn'); 
+            });
+            document.getElementById('remoteBox').style.display = 'block';
+            document.getElementById('viewBtns').style.display = 'flex';
+        });
+
+        call.on('close', function() {
             clearTimeout(timeout);
             st.className = 'status bad';
             st.textContent = '📴 Cámara desconectada';
             addLog('viewLog', 'Conexión cerrada', 'warn');
         });
 
-        call.on('error', (err) => {
+        call.on('error', function(err) {
             clearTimeout(timeout);
             addLog('viewLog', 'Error: ' + err.message, 'err');
             st.className = 'status bad';
@@ -497,7 +522,8 @@ async function connectToCamera() {
         });
     });
 
-    peer.on('error', (e) => {
+    peer.on('error', function(e) {
+        clearTimeout(timeout);
         addLog('viewLog', 'Error: ' + e.type, 'err');
         if(e.type === 'peer-unavailable') {
             st.className = 'status bad';
@@ -509,27 +535,25 @@ async function connectToCamera() {
 }
 
 function toggleMute() {
-    const v = document.getElementById('remoteVideo');
+    var v = document.getElementById('remoteVideo');
     v.muted = !v.muted;
     document.getElementById('muteBtn').textContent = v.muted ? '🔇 Audio' : '🔊 Audio';
 }
 
 function fullscreen() {
-    const el = document.getElementById('remoteBox');
+    var el = document.getElementById('remoteBox');
     if(el.requestFullscreen) el.requestFullscreen();
     else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
 }
 
 function copyCode() {
-    const code = document.getElementById('roomCode').textContent;
-    navigator.clipboard.writeText(code).then(() => {
-        const b = document.querySelector('.copy-btn');
+    var code = document.getElementById('roomCode').textContent;
+    navigator.clipboard.writeText(code).then(function() {
+        var b = document.querySelector('.copy-btn');
         b.textContent = '✅ Copiado!';
-        setTimeout(() => b.textContent = '📋 Copiar código', 2000);
+        setTimeout(function() { b.textContent = '📋 Copiar código'; }, 2000);
     });
 }
 </script>
 </body>
 </html>
-
-
