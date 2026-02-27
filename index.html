@@ -4,84 +4,519 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔒 Vigilancia en Vivo</title>
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: #0a0a1a;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             color: #fff;
-        }
-        .container {
-            text-align: center;
-            padding: 40px;
-        }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(100, 100, 255, 0.5);
-        }
-        .subtitle {
-            color: #aaa;
-            margin-bottom: 50px;
-            font-size: 1.1rem;
-        }
-        .cards {
             display: flex;
-            gap: 30px;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 { margin-bottom: 5px; font-size: 1.8rem; }
+        .sub { color: #888; margin-bottom: 30px; font-size: 0.9rem; }
+        .modes {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
             justify-content: center;
         }
-        .card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 40px 30px;
-            width: 280px;
-            text-decoration: none;
+        .mode-btn {
+            padding: 15px 35px;
+            border-radius: 12px;
+            border: 2px solid #333;
+            background: #111;
             color: #fff;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s;
         }
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(100, 100, 255, 0.5);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            background: rgba(255,255,255,0.1);
-        }
-        .card .icon { font-size: 4rem; margin-bottom: 20px; }
-        .card h2 { font-size: 1.4rem; margin-bottom: 10px; }
-        .card p { color: #aaa; font-size: 0.95rem; line-height: 1.5; }
-        footer {
-            position: fixed;
-            bottom: 20px;
+        .mode-btn:hover { border-color: #6366f1; background: #1a1a2e; }
+        .mode-btn.active { border-color: #22c55e; background: #0a2a1a; }
+        .section {
             width: 100%;
-            text-align: center;
-            color: #555;
-            font-size: 0.85rem;
+            max-width: 800px;
+            display: none;
         }
+        .section.visible { display: block; }
+        .code-box {
+            text-align: center;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .code-box label { color: #888; font-size: 0.85rem; }
+        .big-code {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 8px;
+            color: #22c55e;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            user-select: all;
+        }
+        .copy-btn {
+            padding: 8px 20px;
+            background: #1a3a2a;
+            border: 1px solid #22c55e;
+            color: #22c55e;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .join-box {
+            text-align: center;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .code-input {
+            padding: 12px 20px;
+            font-size: 1.8rem;
+            letter-spacing: 8px;
+            text-align: center;
+            width: 220px;
+            border-radius: 10px;
+            border: 2px solid #333;
+            background: #0a0a1a;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            outline: none;
+            margin-right: 10px;
+        }
+        .code-input:focus { border-color: #6366f1; }
+        .go-btn {
+            padding: 12px 28px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            border: none;
+            background: #6366f1;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .go-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .video-box {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #000;
+            aspect-ratio: 16/9;
+            border: 1px solid #222;
+            margin-bottom: 15px;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .live-badge {
+            position: absolute;
+            top: 12px; left: 12px;
+            background: rgba(0,0,0,0.7);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .red-dot {
+            width: 8px; height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%,100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+        .viewers-badge {
+            position: absolute;
+            top: 12px; right: 12px;
+            background: rgba(0,0,0,0.7);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+        }
+        .fs-btn {
+            position: absolute;
+            bottom: 12px; right: 12px;
+            background: rgba(0,0,0,0.7);
+            border: none;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+        .status {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        .status.ok { background: #0a2a1a; color: #22c55e; }
+        .status.wait { background: #2a2a0a; color: #f59e0b; }
+        .status.bad { background: #2a0a0a; color: #ef4444; }
+        .btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #111;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .btn:hover { background: #1a1a2e; }
+        .btn.red { border-color: #ef4444; color: #ef4444; }
+        .log-box {
+            background: #050510;
+            border: 1px solid #1a1a2a;
+            border-radius: 8px;
+            padding: 10px;
+            max-height: 120px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #555;
+        }
+        .log-box .ok { color: #22c55e; }
+        .log-box .warn { color: #f59e0b; }
+        .log-box .err { color: #ef4444; }
+        .log-box .info { color: #60a5fa; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🔒 Vigilancia en Vivo</h1>
-        <p class="subtitle">Sistema de videovigilancia P2P — sin servidores intermedios</p>
-        <div class="cards">
-            <a href="camera.html" class="card">
-                <div class="icon">📹</div>
-                <h2>Modo Cámara</h2>
-                <p>Activa este PC como cámara de vigilancia. Se generará un código para conectarte desde otros dispositivos.</p>
-            </a>
-            <a href="viewer.html" class="card">
-                <div class="icon">📱</div>
-                <h2>Modo Visor</h2>
-                <p>Conéctate a una cámara activa introduciendo el código de sala para ver el vídeo en directo.</p>
-            </a>
-        </div>
+
+<h1>🔒 Vigilancia en Vivo</h1>
+<p class="sub">Elige un modo para empezar</p>
+
+<div class="modes">
+    <button class="mode-btn" onclick="startCamera()">📹 SOY LA CÁMARA</button>
+    <button class="mode-btn" onclick="startViewer()">📱 QUIERO VER</button>
+</div>
+
+<!-- MODO CÁMARA -->
+<div class="section" id="cameraSection">
+    <div class="code-box" id="codeBox" style="display:none">
+        <label>CÓDIGO DE SALA</label>
+        <div class="big-code" id="roomCode">------</div>
+        <button class="copy-btn" onclick="copyCode()">📋 Copiar código</button>
     </div>
-    <footer>WebRTC P2P · Cifrado extremo a extremo · Sergio M.</footer>
+    <div id="camStatus" class="status wait">⏳ Iniciando cámara...</div>
+    <div class="video-box">
+        <video id="camVideo" autoplay muted playsinline></video>
+        <div class="live-badge"><div class="red-dot"></div> EN VIVO</div>
+        <div class="viewers-badge" id="viewerCount">👁 0</div>
+    </div>
+    <div class="btns">
+        <button class="btn red" onclick="location.reload()">⏹ Detener</button>
+    </div>
+    <div class="log-box" id="camLog"></div>
+</div>
+
+<!-- MODO VISOR -->
+<div class="section" id="viewerSection">
+    <div class="join-box">
+        <p style="color:#aaa; margin-bottom:15px;">Introduce el código de la cámara</p>
+        <input type="text" class="code-input" id="codeInput" maxlength="6" placeholder="------" autocomplete="off">
+        <button class="go-btn" id="goBtn" onclick="connectToCamera()">▶ VER</button>
+    </div>
+    <div id="viewStatus" class="status wait" style="display:none"></div>
+    <div class="video-box" id="remoteBox" style="display:none">
+        <video id="remoteVideo" autoplay playsinline></video>
+        <div class="live-badge"><div class="red-dot"></div> EN VIVO</div>
+        <button class="fs-btn" onclick="fullscreen()">⛶</button>
+    </div>
+    <div class="btns" id="viewBtns" style="display:none">
+        <button class="btn" onclick="fullscreen()">🖥 Pantalla completa</button>
+        <button class="btn" id="muteBtn" onclick="toggleMute()">🔊 Audio</button>
+        <button class="btn red" onclick="location.reload()">⏹ Desconectar</button>
+    </div>
+    <div class="log-box" id="viewLog"></div>
+</div>
+
+<script>
+// ============================================
+// CONFIGURACIÓN METERED
+// ============================================
+const METERED_DOMAIN = 'sergiomorenoarteaga.metered.live';
+const METERED_KEY = 'aU_M_b-4yJVFd0AERdKPD-To5d2Mw7oPhH8nir043EXyHmRS';
+
+let peer, localStream, viewers = [];
+let iceServersCache = null;
+
+function addLog(id, msg, type='info') {
+    const el = document.getElementById(id);
+    const t = new Date().toLocaleTimeString();
+    el.innerHTML += `<div class="${type}">[${t}] ${msg}</div>`;
+    el.scrollTop = el.scrollHeight;
+}
+
+function genCode() {
+    const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let r = ''; for(let i=0;i<6;i++) r+=c[Math.floor(Math.random()*c.length)];
+    return r;
+}
+
+async function getIceServers() {
+    if (iceServersCache) return iceServersCache;
+    try {
+        const resp = await fetch(`https://${METERED_DOMAIN}/api/v1/turn/credentials?apiKey=${METERED_KEY}`);
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        iceServersCache = await resp.json();
+        console.log('ICE Servers:', iceServersCache);
+        return iceServersCache;
+    } catch(e) {
+        console.error('Error obteniendo TURN:', e);
+        return [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' }
+        ];
+    }
+}
+
+// ============================================
+// MODO CÁMARA
+// ============================================
+async function startCamera() {
+    document.querySelectorAll('.mode-btn')[0].classList.add('active');
+    document.getElementById('cameraSection').classList.add('visible');
+    document.getElementById('viewerSection').classList.remove('visible');
+
+    addLog('camLog', 'Solicitando acceso a la cámara...', 'info');
+
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({
+            video: { width:{ideal:1280}, height:{ideal:720} },
+            audio: true
+        });
+        document.getElementById('camVideo').srcObject = localStream;
+        addLog('camLog', '📹 Cámara activa', 'ok');
+    } catch(e) {
+        document.getElementById('camStatus').className = 'status bad';
+        document.getElementById('camStatus').textContent = '❌ No se pudo acceder a la cámara';
+        addLog('camLog', 'Error: ' + e.message, 'err');
+        return;
+    }
+
+    addLog('camLog', 'Obteniendo servidores TURN...', 'info');
+    const iceServers = await getIceServers();
+    addLog('camLog', '✅ Servidores TURN obtenidos: ' + iceServers.length, 'ok');
+
+    const roomId = genCode();
+
+    peer = new Peer('vig-' + roomId, {
+        debug: 0,
+        config: {
+            iceServers: iceServers,
+            iceCandidatePoolSize: 10
+        }
+    });
+
+    peer.on('open', () => {
+        document.getElementById('roomCode').textContent = roomId;
+        document.getElementById('codeBox').style.display = 'block';
+        document.getElementById('camStatus').className = 'status ok';
+        document.getElementById('camStatus').textContent = '✅ Cámara lista — esperando visores';
+        addLog('camLog', '📌 Sala: ' + roomId, 'ok');
+    });
+
+    peer.on('call', (call) => {
+        addLog('camLog', '📞 Visor conectado!', 'ok');
+        call.answer(localStream);
+        viewers.push(call);
+        document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
+
+        call.on('close', () => {
+            viewers = viewers.filter(v => v !== call);
+            document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
+            addLog('camLog', '👋 Visor desconectado', 'warn');
+        });
+
+        call.on('error', (err) => {
+            viewers = viewers.filter(v => v !== call);
+            document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
+            addLog('camLog', 'Error visor: ' + err.message, 'err');
+        });
+    });
+
+    peer.on('error', (e) => {
+        addLog('camLog', 'Error: ' + e.type + ' - ' + e.message, 'err');
+        if (e.type === 'unavailable-id') {
+            addLog('camLog', 'Código en uso, recargando...', 'warn');
+            setTimeout(() => location.reload(), 1500);
+        }
+    });
+
+    peer.on('disconnected', () => {
+        addLog('camLog', 'Reconectando...', 'warn');
+        peer.reconnect();
+    });
+}
+
+// ============================================
+// MODO VISOR
+// ============================================
+function startViewer() {
+    document.querySelectorAll('.mode-btn')[1].classList.add('active');
+    document.getElementById('viewerSection').classList.add('visible');
+    document.getElementById('cameraSection').classList.remove('visible');
+    document.getElementById('codeInput').focus();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const inp = document.getElementById('codeInput');
+    inp.addEventListener('input', (e) => {
+        e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+    });
+    inp.addEventListener('keypress', (e) => {
+        if(e.key==='Enter') connectToCamera();
+    });
+});
+
+async function connectToCamera() {
+    const code = document.getElementById('codeInput').value.trim();
+    if(code.length !== 6) {
+        addLog('viewLog', '⚠️ Introduce 6 caracteres', 'warn');
+        return;
+    }
+
+    const btn = document.getElementById('goBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳...';
+
+    const st = document.getElementById('viewStatus');
+    st.style.display = 'block';
+    st.className = 'status wait';
+    st.textContent = '⏳ Conectando a ' + code + '...';
+
+    addLog('viewLog', 'Obteniendo servidores TURN...', 'info');
+    const iceServers = await getIceServers();
+    addLog('viewLog', '✅ Servidores TURN: ' + iceServers.length, 'ok');
+    addLog('viewLog', 'Conectando a: ' + code, 'info');
+
+    peer = new Peer({
+        debug: 0,
+        config: {
+            iceServers: iceServers,
+            iceCandidatePoolSize: 10
+        }
+    });
+
+    peer.on('open', () => {
+        addLog('viewLog', '✅ Señalización OK', 'ok');
+
+        const ctx = new AudioContext();
+        const oscillator = ctx.createOscillator();
+        const dst = ctx.createMediaStreamDestination();
+        oscillator.connect(dst);
+        oscillator.start();
+        const fakeStream = dst.stream;
+
+        const call = peer.call('vig-' + code, fakeStream);
+
+        if(!call) {
+            st.className = 'status bad';
+            st.textContent = '❌ No se pudo conectar';
+            btn.disabled = false;
+            btn.textContent = '▶ VER';
+            return;
+        }
+
+        const timeout = setTimeout(() => {
+            st.className = 'status bad';
+            st.textContent = '❌ Tiempo agotado — ¿el código es correcto?';
+            addLog('viewLog', 'Timeout: no se recibió vídeo', 'err');
+            btn.disabled = false;
+            btn.textContent = '▶ VER';
+        }, 20000);
+
+        call.on('stream', (remote) => {
+            clearTimeout(timeout);
+            addLog('viewLog', '📹 ¡Vídeo recibido!', 'ok');
+            st.className = 'status ok';
+            st.textContent = '🟢 Conectado — en directo';
+
+            const vid = document.getElementById('remoteVideo');
+            vid.srcObject = remote;
+            vid.muted = false;
+            document.getElementById('remoteBox').style.display = 'block';
+            document.getElementById('viewBtns').style.display = 'flex';
+
+            oscillator.stop();
+            ctx.close();
+        });
+
+        call.on('close', () => {
+            clearTimeout(timeout);
+            st.className = 'status bad';
+            st.textContent = '📴 Cámara desconectada';
+            addLog('viewLog', 'Conexión cerrada', 'warn');
+        });
+
+        call.on('error', (err) => {
+            clearTimeout(timeout);
+            addLog('viewLog', 'Error: ' + err.message, 'err');
+            st.className = 'status bad';
+            st.textContent = '❌ Error de conexión';
+            btn.disabled = false;
+            btn.textContent = '▶ VER';
+        });
+    });
+
+    peer.on('error', (e) => {
+        addLog('viewLog', 'Error: ' + e.type, 'err');
+        if(e.type === 'peer-unavailable') {
+            st.className = 'status bad';
+            st.textContent = '❌ No hay cámara con ese código';
+        }
+        btn.disabled = false;
+        btn.textContent = '▶ VER';
+    });
+}
+
+function toggleMute() {
+    const v = document.getElementById('remoteVideo');
+    v.muted = !v.muted;
+    document.getElementById('muteBtn').textContent = v.muted ? '🔇 Audio' : '🔊 Audio';
+}
+
+function fullscreen() {
+    const el = document.getElementById('remoteBox');
+    if(el.requestFullscreen) el.requestFullscreen();
+    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+}
+
+function copyCode() {
+    const code = document.getElementById('roomCode').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+        const b = document.querySelector('.copy-btn');
+        b.textContent = '✅ Copiado!';
+        setTimeout(() => b.textContent = '📋 Copiar código', 2000);
+    });
+}
+</script>
 </body>
 </html>
