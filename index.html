@@ -38,167 +38,86 @@
         }
         .mode-btn:hover { border-color: #6366f1; background: #1a1a2e; }
         .mode-btn.active { border-color: #22c55e; background: #0a2a1a; }
-        .section {
-            width: 100%;
-            max-width: 800px;
-            display: none;
-        }
+        .section { width: 100%; max-width: 800px; display: none; }
         .section.visible { display: block; }
         .code-box {
-            text-align: center;
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            text-align: center; background: #111; border: 1px solid #222;
+            border-radius: 12px; padding: 20px; margin-bottom: 20px;
         }
         .code-box label { color: #888; font-size: 0.85rem; }
         .big-code {
-            font-size: 2.5rem;
-            font-weight: bold;
-            letter-spacing: 8px;
-            color: #22c55e;
-            font-family: 'Courier New', monospace;
-            margin: 10px 0;
-            user-select: all;
+            font-size: 2.5rem; font-weight: bold; letter-spacing: 8px;
+            color: #22c55e; font-family: 'Courier New', monospace;
+            margin: 10px 0; user-select: all;
         }
         .copy-btn {
-            padding: 8px 20px;
-            background: #1a3a2a;
-            border: 1px solid #22c55e;
-            color: #22c55e;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
+            padding: 8px 20px; background: #1a3a2a; border: 1px solid #22c55e;
+            color: #22c55e; border-radius: 8px; cursor: pointer; font-size: 0.9rem;
         }
         .join-box {
-            text-align: center;
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            text-align: center; background: #111; border: 1px solid #222;
+            border-radius: 12px; padding: 20px; margin-bottom: 20px;
         }
         .code-input {
-            padding: 12px 20px;
-            font-size: 1.8rem;
-            letter-spacing: 8px;
-            text-align: center;
-            width: 220px;
-            border-radius: 10px;
-            border: 2px solid #333;
-            background: #0a0a1a;
-            color: #fff;
-            font-family: 'Courier New', monospace;
-            text-transform: uppercase;
-            outline: none;
-            margin-right: 10px;
+            padding: 12px 20px; font-size: 1.8rem; letter-spacing: 8px;
+            text-align: center; width: 220px; border-radius: 10px;
+            border: 2px solid #333; background: #0a0a1a; color: #fff;
+            font-family: 'Courier New', monospace; text-transform: uppercase;
+            outline: none; margin-right: 10px;
         }
         .code-input:focus { border-color: #6366f1; }
         .go-btn {
-            padding: 12px 28px;
-            font-size: 1.1rem;
-            border-radius: 10px;
-            border: none;
-            background: #6366f1;
-            color: #fff;
-            cursor: pointer;
+            padding: 12px 28px; font-size: 1.1rem; border-radius: 10px;
+            border: none; background: #6366f1; color: #fff; cursor: pointer;
             font-weight: bold;
         }
         .go-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         .video-box {
-            position: relative;
-            border-radius: 14px;
-            overflow: hidden;
-            background: #000;
-            aspect-ratio: 16/9;
-            border: 1px solid #222;
+            position: relative; border-radius: 14px; overflow: hidden;
+            background: #000; aspect-ratio: 16/9; border: 1px solid #222;
             margin-bottom: 15px;
         }
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+        video { width: 100%; height: 100%; object-fit: cover; display: block; }
         .live-badge {
-            position: absolute;
-            top: 12px; left: 12px;
-            background: rgba(0,0,0,0.7);
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7);
+            padding: 5px 12px; border-radius: 15px; font-size: 0.75rem;
+            display: flex; align-items: center; gap: 6px;
         }
         .red-dot {
-            width: 8px; height: 8px;
-            background: #ef4444;
-            border-radius: 50%;
+            width: 8px; height: 8px; background: #ef4444; border-radius: 50%;
             animation: blink 1s infinite;
         }
-        @keyframes blink {
-            0%,100% { opacity: 1; }
-            50% { opacity: 0.2; }
-        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
         .viewers-badge {
-            position: absolute;
-            top: 12px; right: 12px;
-            background: rgba(0,0,0,0.7);
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.75rem;
+            position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7);
+            padding: 5px 12px; border-radius: 15px; font-size: 0.75rem;
         }
         .fs-btn {
-            position: absolute;
-            bottom: 12px; right: 12px;
-            background: rgba(0,0,0,0.7);
-            border: none;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
+            position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.7);
+            border: none; color: #fff; padding: 8px 12px; border-radius: 8px;
+            cursor: pointer; font-size: 1.1rem;
         }
         .status {
-            text-align: center;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
+            text-align: center; padding: 10px; border-radius: 8px;
+            margin-bottom: 15px; font-size: 0.9rem;
         }
         .status.ok { background: #0a2a1a; color: #22c55e; }
         .status.wait { background: #2a2a0a; color: #f59e0b; }
         .status.bad { background: #2a0a0a; color: #ef4444; }
         .btns {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
+            display: flex; gap: 10px; justify-content: center;
+            margin-bottom: 15px; flex-wrap: wrap;
         }
         .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            background: #111;
-            color: #fff;
-            cursor: pointer;
-            font-size: 0.9rem;
+            padding: 10px 20px; border-radius: 8px; border: 1px solid #333;
+            background: #111; color: #fff; cursor: pointer; font-size: 0.9rem;
         }
         .btn:hover { background: #1a1a2e; }
         .btn.red { border-color: #ef4444; color: #ef4444; }
         .log-box {
-            background: #050510;
-            border: 1px solid #1a1a2a;
-            border-radius: 8px;
-            padding: 10px;
-            max-height: 150px;
-            overflow-y: auto;
-            font-family: monospace;
-            font-size: 0.75rem;
-            color: #555;
+            background: #050510; border: 1px solid #1a1a2a; border-radius: 8px;
+            padding: 10px; max-height: 180px; overflow-y: auto;
+            font-family: monospace; font-size: 0.75rem; color: #555;
         }
         .log-box .ok { color: #22c55e; }
         .log-box .warn { color: #f59e0b; }
@@ -216,7 +135,6 @@
     <button class="mode-btn" onclick="startViewer()">📱 QUIERO VER</button>
 </div>
 
-<!-- MODO CÁMARA -->
 <div class="section" id="cameraSection">
     <div class="code-box" id="codeBox" style="display:none">
         <label>CÓDIGO DE SALA</label>
@@ -235,7 +153,6 @@
     <div class="log-box" id="camLog"></div>
 </div>
 
-<!-- MODO VISOR -->
 <div class="section" id="viewerSection">
     <div class="join-box">
         <p style="color:#aaa; margin-bottom:15px;">Introduce el código de la cámara</p>
@@ -257,38 +174,40 @@
 </div>
 
 <script>
-const METERED_DOMAIN = 'sergiomorenoarteaga.metered.live';
-const METERED_KEY = 'aU_M_b-4yJVFd0AERdKPD-To5d2Mw7oPhH8nir043EXyHmRS';
+var METERED_DOMAIN = 'sergiomorenoarteaga.metered.live';
+var METERED_KEY = 'aU_M_b-4yJVFd0AERdKPD-To5d2Mw7oPhH8nir043EXyHmRS';
 
-let peer, localStream, viewers = [];
-let iceServersCache = null;
+var peer, localStream;
+var viewers = [];
+var iceServersCache = null;
 
-function addLog(id, msg, type='info') {
-    const el = document.getElementById(id);
+function addLog(id, msg, type) {
+    type = type || 'info';
+    var el = document.getElementById(id);
     if (!el) return;
-    const t = new Date().toLocaleTimeString();
-    el.innerHTML += `<div class="${type}">[${t}] ${msg}</div>`;
+    var t = new Date().toLocaleTimeString();
+    el.innerHTML += '<div class="' + type + '">[' + t + '] ' + msg + '</div>';
     el.scrollTop = el.scrollHeight;
 }
 
 function genCode() {
-    const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let r = ''; for(let i=0;i<6;i++) r+=c[Math.floor(Math.random()*c.length)];
+    var c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    var r = '';
+    for (var i = 0; i < 6; i++) r += c[Math.floor(Math.random() * c.length)];
     return r;
 }
 
 async function getIceServers() {
     if (iceServersCache) return iceServersCache;
     try {
-        const resp = await fetch('https://' + METERED_DOMAIN + '/api/v1/turn/credentials?apiKey=' + METERED_KEY);
+        var resp = await fetch('https://' + METERED_DOMAIN + '/api/v1/turn/credentials?apiKey=' + METERED_KEY);
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         iceServersCache = await resp.json();
         return iceServersCache;
-    } catch(e) {
+    } catch (e) {
         return [
             { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
-            { urls: 'stun:stun2.l.google.com:19302' }
+            { urls: 'stun:stun1.l.google.com:19302' }
         ];
     }
 }
@@ -300,23 +219,19 @@ async function startCamera() {
     document.querySelectorAll('.mode-btn')[0].classList.add('active');
     document.getElementById('cameraSection').classList.add('visible');
     document.getElementById('viewerSection').classList.remove('visible');
-
     addLog('camLog', 'Solicitando acceso a la cámara...', 'info');
 
     try {
         localStream = await navigator.mediaDevices.getUserMedia({
-            video: { width: {ideal: 1280}, height: {ideal: 720}, frameRate: {ideal: 30} },
+            video: { width: { ideal: 1280 }, height: { ideal: 720 } },
             audio: true
         });
         document.getElementById('camVideo').srcObject = localStream;
-        
-        var tracks = localStream.getTracks();
-        var trackInfo = [];
-        for (var i = 0; i < tracks.length; i++) {
-            trackInfo.push(tracks[i].kind + ':' + tracks[i].enabled + ':' + tracks[i].readyState);
-        }
-        addLog('camLog', '📹 Cámara activa — Tracks: ' + trackInfo.join(', '), 'ok');
-    } catch(e) {
+        var tks = localStream.getTracks();
+        var info = '';
+        for (var i = 0; i < tks.length; i++) info += tks[i].kind + ':' + tks[i].enabled + ':' + tks[i].readyState + ' ';
+        addLog('camLog', '📹 Cámara activa — ' + info, 'ok');
+    } catch (e) {
         document.getElementById('camStatus').className = 'status bad';
         document.getElementById('camStatus').textContent = '❌ No se pudo acceder a la cámara';
         addLog('camLog', 'Error: ' + e.message, 'err');
@@ -325,19 +240,16 @@ async function startCamera() {
 
     addLog('camLog', 'Obteniendo servidores TURN...', 'info');
     var iceServers = await getIceServers();
-    addLog('camLog', '✅ Servidores TURN obtenidos: ' + iceServers.length, 'ok');
+    addLog('camLog', '✅ TURN obtenidos: ' + iceServers.length, 'ok');
 
     var roomId = genCode();
 
     peer = new Peer('vig-' + roomId, {
-        debug: 0,
-        config: {
-            iceServers: iceServers,
-            iceCandidatePoolSize: 10
-        }
+        debug: 2,
+        config: { iceServers: iceServers, iceCandidatePoolSize: 10 }
     });
 
-    peer.on('open', function() {
+    peer.on('open', function () {
         document.getElementById('roomCode').textContent = roomId;
         document.getElementById('codeBox').style.display = 'block';
         document.getElementById('camStatus').className = 'status ok';
@@ -345,53 +257,40 @@ async function startCamera() {
         addLog('camLog', '📌 Sala: ' + roomId, 'ok');
     });
 
-    peer.on('connection', function(conn) {
-        addLog('camLog', '🔗 Conexión de datos recibida', 'info');
-        conn.on('data', function(data) {
-            if (data === 'request-stream') {
-                addLog('camLog', '📞 Visor solicita vídeo, llamando...', 'ok');
-                
-                var tracks = localStream.getTracks();
-                var trackInfo = [];
-                for (var i = 0; i < tracks.length; i++) {
-                    trackInfo.push(tracks[i].kind + ':' + tracks[i].enabled + ':' + tracks[i].readyState);
-                }
-                addLog('camLog', 'Enviando tracks: ' + trackInfo.join(', '), 'info');
-                
-                var outgoingCall = peer.call(conn.peer, localStream);
-                
-                if (outgoingCall) {
-                    viewers.push(outgoingCall);
-                    document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
-                    addLog('camLog', '✅ Stream enviado al visor', 'ok');
-                    
-                    outgoingCall.on('close', function() {
-                        viewers = viewers.filter(function(v) { return v !== outgoingCall; });
-                        document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
-                        addLog('camLog', '👋 Visor desconectado', 'warn');
-                    });
-                    
-                    outgoingCall.on('error', function(err) {
-                        viewers = viewers.filter(function(v) { return v !== outgoingCall; });
-                        document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
-                        addLog('camLog', 'Error visor: ' + err.message, 'err');
-                    });
-                } else {
-                    addLog('camLog', '❌ No se pudo llamar al visor', 'err');
-                }
-            }
+    peer.on('call', function (call) {
+        addLog('camLog', '📞 Llamada entrante de visor!', 'ok');
+
+        // Verificar que localStream tiene tracks
+        var tks = localStream.getTracks();
+        var info = '';
+        for (var i = 0; i < tks.length; i++) info += tks[i].kind + ':' + tks[i].enabled + ':' + tks[i].readyState + ' ';
+        addLog('camLog', '📤 Respondiendo con tracks: ' + info, 'info');
+
+        // Responder con el stream completo
+        call.answer(localStream);
+        addLog('camLog', '✅ Respondido con localStream', 'ok');
+
+        viewers.push(call);
+        document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
+
+        call.on('close', function () {
+            viewers = viewers.filter(function (v) { return v !== call; });
+            document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
+            addLog('camLog', '👋 Visor desconectado', 'warn');
+        });
+
+        call.on('error', function (err) {
+            viewers = viewers.filter(function (v) { return v !== call; });
+            document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
+            addLog('camLog', 'Error visor: ' + err.message, 'err');
         });
     });
 
-    peer.on('error', function(e) {
-        addLog('camLog', 'Error: ' + e.type + ' - ' + e.message, 'err');
-        if (e.type === 'unavailable-id') {
-            addLog('camLog', 'Código en uso, recargando...', 'warn');
-            setTimeout(function() { location.reload(); }, 1500);
-        }
+    peer.on('error', function (e) {
+        addLog('camLog', 'Error: ' + e.type + ' ' + e.message, 'err');
     });
 
-    peer.on('disconnected', function() {
+    peer.on('disconnected', function () {
         addLog('camLog', 'Reconectando...', 'warn');
         peer.reconnect();
     });
@@ -407,19 +306,19 @@ function startViewer() {
     document.getElementById('codeInput').focus();
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     var inp = document.getElementById('codeInput');
-    inp.addEventListener('input', function(e) {
-        e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+    inp.addEventListener('input', function (e) {
+        e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     });
-    inp.addEventListener('keypress', function(e) {
-        if(e.key === 'Enter') connectToCamera();
+    inp.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') connectToCamera();
     });
 });
 
 async function connectToCamera() {
     var code = document.getElementById('codeInput').value.trim();
-    if(code.length !== 6) {
+    if (code.length !== 6) {
         addLog('viewLog', '⚠️ Introduce 6 caracteres', 'warn');
         return;
     }
@@ -435,99 +334,98 @@ async function connectToCamera() {
 
     addLog('viewLog', 'Obteniendo servidores TURN...', 'info');
     var iceServers = await getIceServers();
-    addLog('viewLog', '✅ Servidores TURN: ' + iceServers.length, 'ok');
+    addLog('viewLog', '✅ TURN: ' + iceServers.length, 'ok');
+
+    // Obtener un stream de vídeo+audio del visor para la negociación
+    var viewerStream;
+    try {
+        viewerStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        addLog('viewLog', '✅ Stream local obtenido para negociación', 'ok');
+    } catch (e) {
+        addLog('viewLog', '⚠️ Sin cámara local, usando solo audio...', 'warn');
+        try {
+            viewerStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        } catch (e2) {
+            addLog('viewLog', '⚠️ Sin micro, creando stream vacío...', 'warn');
+            viewerStream = new MediaStream();
+        }
+    }
+
     addLog('viewLog', 'Conectando a: ' + code, 'info');
 
     peer = new Peer({
-        debug: 0,
-        config: {
-            iceServers: iceServers,
-            iceCandidatePoolSize: 10
-        }
+        debug: 2,
+        config: { iceServers: iceServers, iceCandidatePoolSize: 10 }
     });
 
-    peer.on('open', function() {
-        addLog('viewLog', '✅ Señalización OK', 'ok');
-        addLog('viewLog', 'Solicitando stream a la cámara...', 'info');
+    peer.on('open', function () {
+        addLog('viewLog', '✅ Señalización OK, llamando a cámara...', 'ok');
 
-        // Conectar por datos y pedir que la cámara nos llame
-        var conn = peer.connect('vig-' + code, { reliable: true });
-        
-        conn.on('open', function() {
-            addLog('viewLog', '🔗 Conexión de datos establecida', 'ok');
-            conn.send('request-stream');
-            addLog('viewLog', '📡 Petición de vídeo enviada, esperando...', 'info');
-        });
+        var call = peer.call('vig-' + code, viewerStream);
 
-        conn.on('error', function(err) {
-            addLog('viewLog', 'Error conexión: ' + err.message, 'err');
+        if (!call) {
             st.className = 'status bad';
-            st.textContent = '❌ Error de conexión';
+            st.textContent = '❌ No se pudo conectar';
             btn.disabled = false;
             btn.textContent = '▶ VER';
-        });
-    });
+            return;
+        }
 
-    // Timeout de 20 segundos
-    var timeout = setTimeout(function() {
-        st.className = 'status bad';
-        st.textContent = '❌ Tiempo agotado — ¿el código es correcto?';
-        addLog('viewLog', 'Timeout: no se recibió vídeo', 'err');
-        btn.disabled = false;
-        btn.textContent = '▶ VER';
-    }, 20000);
+        var timeout = setTimeout(function () {
+            st.className = 'status bad';
+            st.textContent = '❌ Tiempo agotado';
+            addLog('viewLog', 'Timeout', 'err');
+            btn.disabled = false;
+            btn.textContent = '▶ VER';
+        }, 25000);
 
-    // Recibir la llamada de la cámara
-    peer.on('call', function(call) {
-        addLog('viewLog', '📞 Recibiendo llamada de la cámara...', 'ok');
-        call.answer(); // Contestar sin enviar nada
-
-        call.on('stream', function(remote) {
+        call.on('stream', function (remote) {
             clearTimeout(timeout);
-            
-            var tracks = remote.getTracks();
-            var trackInfo = [];
-            for (var i = 0; i < tracks.length; i++) {
-                trackInfo.push(tracks[i].kind + ':' + tracks[i].enabled + ':' + tracks[i].readyState);
-            }
-            addLog('viewLog', '📹 ¡Vídeo recibido! Tracks: ' + trackInfo.join(', '), 'ok');
-            
+            var tks = remote.getTracks();
+            var info = '';
+            for (var i = 0; i < tks.length; i++) info += tks[i].kind + ':' + tks[i].enabled + ':' + tks[i].readyState + ' ';
+            addLog('viewLog', '📹 Recibido! Tracks: ' + info, 'ok');
+
             st.className = 'status ok';
             st.textContent = '🟢 Conectado — en directo';
 
             var vid = document.getElementById('remoteVideo');
             vid.srcObject = remote;
             vid.muted = false;
-            vid.play().catch(function(e) { 
-                addLog('viewLog', 'Play: ' + e.message, 'warn'); 
+            vid.play().catch(function (e) {
+                addLog('viewLog', 'Play: ' + e.message, 'warn');
             });
+
+            // Parar cámara local del visor (ya no se necesita)
+            if (viewerStream && viewerStream.getTracks) {
+                viewerStream.getTracks().forEach(function (t) { t.stop(); });
+            }
+
             document.getElementById('remoteBox').style.display = 'block';
             document.getElementById('viewBtns').style.display = 'flex';
         });
 
-        call.on('close', function() {
+        call.on('close', function () {
             clearTimeout(timeout);
             st.className = 'status bad';
             st.textContent = '📴 Cámara desconectada';
-            addLog('viewLog', 'Conexión cerrada', 'warn');
         });
 
-        call.on('error', function(err) {
+        call.on('error', function (err) {
             clearTimeout(timeout);
             addLog('viewLog', 'Error: ' + err.message, 'err');
             st.className = 'status bad';
-            st.textContent = '❌ Error de conexión';
+            st.textContent = '❌ Error';
             btn.disabled = false;
             btn.textContent = '▶ VER';
         });
     });
 
-    peer.on('error', function(e) {
-        clearTimeout(timeout);
+    peer.on('error', function (e) {
         addLog('viewLog', 'Error: ' + e.type, 'err');
-        if(e.type === 'peer-unavailable') {
+        if (e.type === 'peer-unavailable') {
             st.className = 'status bad';
-            st.textContent = '❌ No hay cámara con ese código';
+            st.textContent = '❌ Cámara no encontrada';
         }
         btn.disabled = false;
         btn.textContent = '▶ VER';
@@ -542,16 +440,16 @@ function toggleMute() {
 
 function fullscreen() {
     var el = document.getElementById('remoteBox');
-    if(el.requestFullscreen) el.requestFullscreen();
-    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    if (el.requestFullscreen) el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
 }
 
 function copyCode() {
     var code = document.getElementById('roomCode').textContent;
-    navigator.clipboard.writeText(code).then(function() {
+    navigator.clipboard.writeText(code).then(function () {
         var b = document.querySelector('.copy-btn');
         b.textContent = '✅ Copiado!';
-        setTimeout(function() { b.textContent = '📋 Copiar código'; }, 2000);
+        setTimeout(function () { b.textContent = '📋 Copiar código'; }, 2000);
     });
 }
 </script>
