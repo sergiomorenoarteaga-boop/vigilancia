@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 Vigilancia en Vivo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(100, 100, 255, 0.5);
+        }
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 50px;
+            font-size: 1.1rem;
+        }
+        .cards {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 280px;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(100, 100, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.1);
+        }
+        .card .icon { font-size: 4rem; margin-bottom: 20px; }
+        .card h2 { font-size: 1.4rem; margin-bottom: 10px; }
+        .card p { color: #aaa; font-size: 0.95rem; line-height: 1.5; }
+        footer {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: #555;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Vigilancia en Vivo</h1>
+        <p class="subtitle">Sistema de videovigilancia P2P — sin servidores intermedios</p>
+        <div class="cards">
+            <a href="camera.html" class="card">
+                <div class="icon">📹</div>
+                <h2>Modo Cámara</h2>
+                <p>Activa este PC como cámara de vigilancia. Se generará un código para conectarte desde otros dispositivos.</p>
+            </a>
+            <a href="viewer.html" class="card">
+                <div class="icon">📱</div>
+                <h2>Modo Visor</h2>
+                <p>Conéctate a una cámara activa introduciendo el código de sala para ver el vídeo en directo.</p>
+            </a>
+        </div>
+    </div>
+    <footer>WebRTC P2P · Cifrado extremo a extremo · Sergio M.</footer>
+</body>
+</html>
