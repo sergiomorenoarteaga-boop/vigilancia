@@ -344,8 +344,16 @@ async function startCamera() {
     });
 
     peer.on('call', (call) => {
-        addLog('camLog', '📞 Visor conectado!', 'ok');
-        call.answer(localStream);
+    addLog('camLog', '📞 Visor conectado!', 'ok');
+    addLog('camLog', 'Enviando tracks: ' + localStream.getTracks().map(t => t.kind + ':' + t.enabled + ':' + t.readyState).join(', '), 'info');
+    
+    // Crear nuevo stream asegurando que tiene vídeo y audio
+    const freshStream = new MediaStream();
+    localStream.getTracks().forEach(track => {
+        freshStream.addTrack(track.clone());
+    });
+    call.answer(freshStream);
+
         viewers.push(call);
         document.getElementById('viewerCount').textContent = '👁 ' + viewers.length;
 
@@ -523,4 +531,5 @@ function copyCode() {
 </script>
 </body>
 </html>
+
 
