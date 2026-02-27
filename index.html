@@ -454,14 +454,17 @@ async function connectToCamera() {
         }, 20000);
 
         call.on('stream', (remote) => {
-            clearTimeout(timeout);
-            addLog('viewLog', '📹 ¡Vídeo recibido!', 'ok');
-            st.className = 'status ok';
-            st.textContent = '🟢 Conectado — en directo';
+    clearTimeout(timeout);
+    addLog('viewLog', '📹 ¡Vídeo recibido!', 'ok');
+    addLog('viewLog', 'Tracks: ' + remote.getTracks().map(t => t.kind + ':' + t.enabled + ':' + t.readyState).join(', '), 'info');
+    st.className = 'status ok';
+    st.textContent = '🟢 Conectado — en directo';
 
-            const vid = document.getElementById('remoteVideo');
-            vid.srcObject = remote;
-            vid.muted = false;
+    const vid = document.getElementById('remoteVideo');
+    vid.srcObject = remote;
+    vid.muted = false;
+    vid.play().catch(e => addLog('viewLog', 'Play error: ' + e.message, 'warn'));
+
             document.getElementById('remoteBox').style.display = 'block';
             document.getElementById('viewBtns').style.display = 'flex';
 
@@ -520,3 +523,4 @@ function copyCode() {
 </script>
 </body>
 </html>
+
